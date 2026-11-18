@@ -39,8 +39,6 @@
   }
   a{color:inherit}
   .wrap{max-width:680px;margin:0 auto;padding:0 20px 48px}
-
-  /* Header */
   .top{padding:44px 0 8px;text-align:center}
   .ornament{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:18px}
   .ornament span{height:1px;width:52px;background:linear-gradient(90deg, transparent, var(--gold));display:block}
@@ -53,14 +51,11 @@
   .tags{font-size:14px;color:var(--muted);margin:6px 0 0;letter-spacing:.02em}
   .tags b{color:var(--gold);font-weight:400;margin:0 4px}
   .intro{max-width:520px;margin:20px auto 0;text-align:center;color:var(--muted);font-size:15.5px;line-height:1.9}
-
-  /* Sections */
   .section{margin-top:36px}
   .section-head{display:flex;align-items:center;gap:14px;margin-bottom:16px}
   .section-head h2{font-size:20px;font-weight:800;margin:0;white-space:nowrap}
   .section-head::after{content:"";flex:1;height:1px;background:var(--line)}
   .section-head .num{width:36px;height:36px;border:1px solid var(--line);border-radius:50%;display:grid;place-items:center;color:var(--gold-light);font-size:15px;font-weight:700;flex-shrink:0;background:rgba(201,168,106,.08)}
-
   .list{display:grid;gap:14px}
   .card{
     background:linear-gradient(180deg, var(--card), #0b142c);
@@ -80,11 +75,8 @@
   .price span{font-size:12.5px;color:var(--muted2)}
   .badge{display:inline-flex;align-items:center;gap:6px;background:rgba(201,168,106,.14);border:1px solid var(--line);color:var(--gold-light);font-size:12.5px;font-weight:700;padding:3px 10px;border-radius:999px;margin-bottom:10px}
   .card.featured{border-color:rgba(201,168,106,.45);background:linear-gradient(180deg, #142046, #0d1733);box-shadow:0 12px 32px rgba(0,0,0,.35)}
-
   .per{margin-top:12px;padding-top:12px;border-top:1px dashed rgba(255,255,255,.12);display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:13.5px;color:var(--muted)}
   .per b{color:var(--gold-light);font-weight:700;white-space:nowrap}
-
-  /* Highlights */
   .highlights{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:28px}
   .hl{border-radius:16px;padding:18px;text-align:center}
   .hl.free{background:var(--gold);color:#1a1405}
@@ -94,7 +86,6 @@
   .hl.pay .hl-big{font-size:28px;font-weight:900;color:var(--gold-light);line-height:1}
   .hl.pay .hl-title{font-size:15px;font-weight:700;margin-top:6px}
   .hl.pay .hl-sub{font-size:13px;color:var(--muted);margin-top:2px}
-
   .note{
     margin-top:22px;
     text-align:center;
@@ -104,8 +95,6 @@
     padding:0 8px;
   }
   .note strong{color:var(--text);font-weight:600}
-
-  /* CTA */
   .cta{
     margin-top:28px;
     background:linear-gradient(180deg, #131f42, #0a1226);
@@ -137,8 +126,6 @@
   .cta-handle{direction:ltr;unicode-bidi:embed}
   .footer{margin-top:22px;text-align:center;color:var(--muted2);font-size:13px}
   .footer .dot{color:var(--gold);margin:0 6px}
-
-  /* Glass pick buttons */
   .pick{
     margin-top:16px;
     width:100%;
@@ -178,8 +165,6 @@
     color:var(--gold-light);
     border-color:rgba(255,255,255,.3);
   }
-
-  /* Sticky booking bar */
   .bookbar{
     position:fixed;inset-inline:0;bottom:0;z-index:50;
     padding:12px 16px calc(12px + env(safe-area-inset-bottom));
@@ -212,8 +197,6 @@
   }
   .bb-btn:active{transform:scale(.98)}
   body.has-bar .wrap{padding-bottom:132px}
-
-  /* Order sheet */
   .sheet-backdrop{
     position:fixed;inset:0;z-index:64;
     background:rgba(3,6,15,.62);
@@ -289,7 +272,6 @@
   }
   .sheet-copy:active{transform:scale(.985)}
   .sheet-go:focus-visible,.sheet-copy:focus-visible,.sheet-close:focus-visible{outline:2px solid var(--gold-light);outline-offset:2px}
-
   @media (max-width:520px){
     h1{font-size:36px}
     .card-top{flex-direction:column;gap:10px}
@@ -306,17 +288,14 @@
 </head>
 <body>
 <div class="wrap">
-
   <header class="top">
     <div class="ornament" aria-hidden="true"><span></span><i></i><span></span></div>
     <p class="brand">POORYA STUDIO</p>
     <h1>تعرفه خدمات<br><em>پوریا استودیو</em></h1>
     <p class="subtitle">فیلمبرداری و تولید محتوا</p>
-    <p class="tags">بیوتی <b>•</b> فشن <b>•</b> موزیک‌ویدیو</p>
-    <p class="intro">برای سالن‌های زیبایی و بوتیک‌ها — کلیپ‌هایی که کار شما را همان‌طور که هست، حرفه‌ای و چشمگیر نشان می‌دهد.</p>
+    <p class="tags">بیوتی <b>•</b> فشن <b>•</b> موزیک‌ویدیو <b>•</b> بلاگرها <b>•</b> فرمالیته</p>
+    <p class="intro">برای سالن‌های زیبایی، بوتیک‌ها، بلاگرها و مراسم فرمالیته — کلیپ‌هایی که کار شما را همان‌طور که هست، حرفه‌ای و چشمگیر نشان می‌دهد.</p>
   </header>
-
-  <!-- تکی -->
   <section class="section" aria-labelledby="single-title">
     <div class="section-head">
       <span class="num">۱</span>
@@ -338,7 +317,6 @@
           <span class="pick-label">ارسال و پیست</span>
         </button>
       </article>
-
       <article class="card">
         <div class="card-top">
           <div>
@@ -354,7 +332,6 @@
           <span class="pick-label">ارسال و پیست</span>
         </button>
       </article>
-
       <article class="card">
         <div class="card-top">
           <div>
@@ -373,8 +350,6 @@
       </article>
     </div>
   </section>
-
-  <!-- پکیج ماهانه -->
   <section class="section" aria-labelledby="package-title">
     <div class="section-head">
       <span class="num">۲</span>
@@ -402,7 +377,6 @@
           <span class="pick-label">ارسال و پیست</span>
         </button>
       </article>
-
       <article class="card">
         <div class="card-top">
           <div>
@@ -421,8 +395,6 @@
       </article>
     </div>
   </section>
-
-  <!-- نکات مهم -->
   <div class="highlights">
     <div class="hl free">
       <div class="hl-title">کلیپ نمونه: رایگان</div>
@@ -438,13 +410,10 @@
       <div class="hl-sub">قبل از فیلمبرداری دریافت می‌شود</div>
     </div>
   </div>
-
   <p class="note">
     این تعرفه‌ها برای <strong>رامهرمز و شهرهای اطراف</strong> است.<br>
     قیمت دقیق هر پروژه، بسته به نوع کار و جزئیات آن مشخص می‌شود.
   </p>
-
-  <!-- CTA -->
   <section class="cta" aria-labelledby="cta-title">
     <h2 id="cta-title">برای رزرو پروژه</h2>
     <p id="cta-text">خدمت موردنظرتون رو از بالا انتخاب کنید، یا مستقیم در اینستاگرام دایرکت بدید؛ در خدمتم</p>
@@ -453,12 +422,8 @@
       <span class="cta-handle">@poorya.studio</span>
     </a>
   </section>
-
   <p class="footer">پوریا استودیو <span class="dot">•</span> رامهرمز</p>
-
 </div>
-
-<!-- نوار ثبت سفارش -->
 <div class="bookbar" id="bookbar" aria-hidden="true">
   <div class="bookbar-in">
     <div class="bookbar-txt">
@@ -471,7 +436,6 @@
     </a>
   </div>
 </div>
-<!-- برگه تکمیل سفارش -->
 <div class="sheet-backdrop" id="sheet-backdrop"></div>
 <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title" aria-hidden="true">
   <div class="sheet-card">
@@ -496,7 +460,6 @@
     </button>
   </div>
 </div>
-
 <script>
 (function () {
   var DM = 'https://ig.me/m/poorya.studio';
@@ -515,7 +478,6 @@
   var sheetCopy = document.getElementById('sheet-copy');
   var sheetClose = document.getElementById('sheet-close');
   var current = null;
-
   function message(name, price) {
     return 'سلام، وقت بخیر 🌿\nبرای ثبت سفارش «' + name + '» (' + price + ') پیام می‌دم.\nممنون می‌شم برای هماهنگی راهنمایی کنید.';
   }
@@ -538,7 +500,7 @@
         document.execCommand('copy');
         document.body.removeChild(ta);
         ok();
-      } catch (e) { /* کپی ممکن نیست؛ متن داخل برگه نمایش داده شده و قابل کپی دستی است */ }
+      } catch (e) { }
     }
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(text).then(ok, fallback);
