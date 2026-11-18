@@ -1,0 +1,620 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="color-scheme" content="dark" />
+<link rel="icon" href="data:," />
+<title>تعرفه خدمات پوریا استودیو</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy-950:#060b1d;
+    --navy-900:#0a1226;
+    --navy-800:#101a36;
+    --navy-700:#16244a;
+    --gold:#c9a86a;
+    --gold-light:#e8cf8f;
+    --gold-dark:#9a7f4a;
+    --text:#f5f0e6;
+    --muted:#b8bdd0;
+    --muted2:#8f96b0;
+    --line:rgba(201,168,106,.28);
+    --card:#0e1833;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;
+    font-family:"Vazirmatn", system-ui, -apple-system, Segoe UI, Tahoma, sans-serif;
+    background:
+      radial-gradient(700px 400px at 50% -80px, rgba(201,168,106,.14), transparent 65%),
+      radial-gradient(500px 300px at 100% 40%, rgba(22,36,74,.9), transparent),
+      var(--navy-950);
+    color:var(--text);
+    line-height:1.8;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit}
+  .wrap{max-width:680px;margin:0 auto;padding:0 20px 48px}
+
+  /* Header */
+  .top{padding:44px 0 8px;text-align:center}
+  .ornament{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:18px}
+  .ornament span{height:1px;width:52px;background:linear-gradient(90deg, transparent, var(--gold));display:block}
+  .ornament span:last-child{background:linear-gradient(90deg, var(--gold), transparent)}
+  .ornament i{width:7px;height:7px;background:var(--gold);transform:rotate(45deg);display:block;flex-shrink:0}
+  .brand{font-size:15px;letter-spacing:.12em;color:var(--gold-light);font-weight:600;margin:0}
+  h1{font-size:42px;line-height:1.15;font-weight:900;margin:10px 0 6px;letter-spacing:-.02em}
+  h1 em{font-style:normal;color:var(--gold-light)}
+  .subtitle{font-size:17px;color:var(--text);font-weight:500;margin:0}
+  .tags{font-size:14px;color:var(--muted);margin:6px 0 0;letter-spacing:.02em}
+  .tags b{color:var(--gold);font-weight:400;margin:0 4px}
+  .intro{max-width:520px;margin:20px auto 0;text-align:center;color:var(--muted);font-size:15.5px;line-height:1.9}
+
+  /* Sections */
+  .section{margin-top:36px}
+  .section-head{display:flex;align-items:center;gap:14px;margin-bottom:16px}
+  .section-head h2{font-size:20px;font-weight:800;margin:0;white-space:nowrap}
+  .section-head::after{content:"";flex:1;height:1px;background:var(--line)}
+  .section-head .num{width:36px;height:36px;border:1px solid var(--line);border-radius:50%;display:grid;place-items:center;color:var(--gold-light);font-size:15px;font-weight:700;flex-shrink:0;background:rgba(201,168,106,.08)}
+
+  .list{display:grid;gap:14px}
+  .card{
+    background:linear-gradient(180deg, var(--card), #0b142c);
+    border:1px solid rgba(255,255,255,.07);
+    border-radius:18px;
+    padding:20px 20px 18px;
+    position:relative;
+    overflow:hidden;
+  }
+  .card::before{content:"";position:absolute;inset-inline-start:0;top:0;bottom:0;width:3px;background:linear-gradient(180deg, var(--gold-light), var(--gold-dark))}
+  .card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
+  .card h3{font-size:17px;font-weight:700;line-height:1.6;margin:0}
+  .card p{margin:4px 0 0;color:var(--muted);font-size:14px;line-height:1.8}
+  .price{text-align:left;flex-shrink:0}
+  .price strong{display:block;font-size:22px;line-height:1.2;font-weight:900;color:#fff;white-space:nowrap}
+  .price strong small{font-size:13px;font-weight:600;color:var(--gold-light)}
+  .price span{font-size:12.5px;color:var(--muted2)}
+  .badge{display:inline-flex;align-items:center;gap:6px;background:rgba(201,168,106,.14);border:1px solid var(--line);color:var(--gold-light);font-size:12.5px;font-weight:700;padding:3px 10px;border-radius:999px;margin-bottom:10px}
+  .card.featured{border-color:rgba(201,168,106,.45);background:linear-gradient(180deg, #142046, #0d1733);box-shadow:0 12px 32px rgba(0,0,0,.35)}
+
+  .per{margin-top:12px;padding-top:12px;border-top:1px dashed rgba(255,255,255,.12);display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:13.5px;color:var(--muted)}
+  .per b{color:var(--gold-light);font-weight:700;white-space:nowrap}
+
+  /* Highlights */
+  .highlights{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:28px}
+  .hl{border-radius:16px;padding:18px;text-align:center}
+  .hl.free{background:var(--gold);color:#1a1405}
+  .hl.free .hl-title{font-size:18px;font-weight:900;line-height:1.4}
+  .hl.free .hl-sub{font-size:13.5px;line-height:1.7;opacity:.85;margin-top:4px}
+  .hl.pay{background:transparent;border:1px solid var(--line)}
+  .hl.pay .hl-big{font-size:28px;font-weight:900;color:var(--gold-light);line-height:1}
+  .hl.pay .hl-title{font-size:15px;font-weight:700;margin-top:6px}
+  .hl.pay .hl-sub{font-size:13px;color:var(--muted);margin-top:2px}
+
+  .note{
+    margin-top:22px;
+    text-align:center;
+    color:var(--muted);
+    font-size:14px;
+    line-height:1.9;
+    padding:0 8px;
+  }
+  .note strong{color:var(--text);font-weight:600}
+
+  /* CTA */
+  .cta{
+    margin-top:28px;
+    background:linear-gradient(180deg, #131f42, #0a1226);
+    border:1px solid var(--line);
+    border-radius:20px;
+    padding:28px 22px 24px;
+    text-align:center;
+  }
+  .cta h2{font-size:22px;font-weight:800;margin:0 0 6px}
+  .cta p{margin:0;color:var(--muted);font-size:15px}
+  .cta-btn{
+    display:flex;align-items:center;justify-content:center;gap:10px;
+    margin-top:18px;
+    background:linear-gradient(135deg, rgba(232,207,143,.92), rgba(154,127,74,.78));
+    -webkit-backdrop-filter:blur(10px) saturate(1.3);
+    backdrop-filter:blur(10px) saturate(1.3);
+    border:1px solid rgba(255,255,255,.35);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.45), 0 10px 24px rgba(0,0,0,.3);
+    color:#171106;
+    text-decoration:none;
+    font-weight:800;
+    font-size:17px;
+    min-height:52px;
+    border-radius:14px;
+    padding:12px 18px;
+    direction:ltr;
+  }
+  .cta-btn:active{transform:scale(.99)}
+  .cta-handle{direction:ltr;unicode-bidi:embed}
+  .footer{margin-top:22px;text-align:center;color:var(--muted2);font-size:13px}
+  .footer .dot{color:var(--gold);margin:0 6px}
+
+  /* Glass pick buttons */
+  .pick{
+    margin-top:16px;
+    width:100%;
+    display:flex;align-items:center;justify-content:center;gap:8px;
+    min-height:48px;
+    padding:10px 16px;
+    font-family:inherit;
+    font-size:15px;font-weight:700;
+    color:var(--gold-light);
+    background:linear-gradient(135deg, rgba(255,255,255,.14), rgba(255,255,255,.05));
+    -webkit-backdrop-filter:blur(12px) saturate(1.4);
+    backdrop-filter:blur(12px) saturate(1.4);
+    border:1px solid rgba(255,255,255,.22);
+    border-radius:14px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.25), 0 8px 20px rgba(0,0,0,.25);
+    cursor:pointer;
+    transition:background .2s ease, border-color .2s ease, transform .15s ease;
+  }
+  .pick:hover{border-color:rgba(232,207,143,.55)}
+  .pick:active{transform:scale(.985)}
+  .pick:focus-visible{outline:2px solid var(--gold-light);outline-offset:2px}
+  .card.selected{border-color:rgba(201,168,106,.7);box-shadow:0 0 0 1px rgba(201,168,106,.35), 0 14px 34px rgba(0,0,0,.4)}
+  .card.selected .pick{
+    background:linear-gradient(135deg, rgba(201,168,106,.9), rgba(154,127,74,.8));
+    color:#171106;
+    border-color:rgba(255,255,255,.4);
+  }
+  .pick.on-gold{
+    color:#241a04;
+    background:linear-gradient(135deg, rgba(255,255,255,.38), rgba(255,255,255,.14));
+    border-color:rgba(255,255,255,.55);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.55), 0 8px 18px rgba(0,0,0,.18);
+  }
+  .hl.free.selected{outline:2px solid rgba(255,255,255,.7);outline-offset:2px}
+  .hl.free.selected .pick.on-gold{
+    background:linear-gradient(135deg, rgba(23,17,6,.88), rgba(23,17,6,.68));
+    color:var(--gold-light);
+    border-color:rgba(255,255,255,.3);
+  }
+
+  /* Sticky booking bar */
+  .bookbar{
+    position:fixed;inset-inline:0;bottom:0;z-index:50;
+    padding:12px 16px calc(12px + env(safe-area-inset-bottom));
+    background:rgba(10,18,38,.55);
+    -webkit-backdrop-filter:blur(18px) saturate(1.5);
+    backdrop-filter:blur(18px) saturate(1.5);
+    border-top:1px solid rgba(255,255,255,.15);
+    box-shadow:0 -10px 30px rgba(0,0,0,.35);
+    transform:translateY(110%);
+    transition:transform .3s ease;
+  }
+  .bookbar.show{transform:translateY(0)}
+  .bookbar-in{max-width:680px;margin:0 auto;display:flex;align-items:center;gap:12px}
+  .bookbar-txt{flex:1;min-width:0}
+  .bb-name{font-weight:800;font-size:15px;line-height:1.5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .bb-price{font-size:13px;color:var(--gold-light);line-height:1.5}
+  .bb-btn{
+    flex-shrink:0;
+    display:inline-flex;align-items:center;gap:8px;
+    min-height:50px;
+    padding:10px 20px;
+    font-size:15.5px;font-weight:800;
+    color:#171106;text-decoration:none;
+    background:linear-gradient(135deg, rgba(232,207,143,.95), rgba(154,127,74,.85));
+    -webkit-backdrop-filter:blur(10px) saturate(1.3);
+    backdrop-filter:blur(10px) saturate(1.3);
+    border:1px solid rgba(255,255,255,.4);
+    border-radius:14px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.5), 0 8px 20px rgba(0,0,0,.3);
+  }
+  .bb-btn:active{transform:scale(.98)}
+  body.has-bar .wrap{padding-bottom:132px}
+
+  /* Order sheet */
+  .sheet-backdrop{
+    position:fixed;inset:0;z-index:64;
+    background:rgba(3,6,15,.62);
+    opacity:0;pointer-events:none;
+    transition:opacity .25s ease;
+  }
+  .sheet-backdrop.show{opacity:1;pointer-events:auto}
+  .sheet{
+    position:fixed;inset-inline:0;bottom:0;z-index:65;
+    padding:12px 12px calc(12px + env(safe-area-inset-bottom));
+    transform:translateY(110%);
+    transition:transform .3s ease;
+    pointer-events:none;
+  }
+  .sheet.show{transform:translateY(0);pointer-events:auto}
+  .sheet-card{
+    max-width:640px;margin:0 auto;position:relative;
+    background:linear-gradient(180deg, #142046, #0b142c);
+    border:1px solid var(--line);
+    border-radius:20px;
+    padding:22px 20px 18px;
+    box-shadow:0 -12px 40px rgba(0,0,0,.5);
+  }
+  .sheet-close{
+    position:absolute;top:12px;inset-inline-end:12px;
+    width:34px;height:34px;display:grid;place-items:center;
+    background:rgba(255,255,255,.06);
+    border:1px solid rgba(255,255,255,.14);
+    border-radius:50%;
+    color:var(--muted);
+    cursor:pointer;
+  }
+  .sheet-close:active{transform:scale(.95)}
+  .sheet-card h2{font-size:19px;font-weight:800;margin:0 0 4px;padding-inline-end:36px}
+  .sheet-sub{color:var(--muted);font-size:14px;margin:0}
+  .sheet-msg{
+    margin-top:12px;
+    background:rgba(255,255,255,.05);
+    border:1px dashed rgba(201,168,106,.45);
+    border-radius:12px;
+    padding:12px 14px;
+    font-size:14px;line-height:1.9;
+    white-space:pre-line;
+    color:var(--text);
+  }
+  .sheet-steps{margin:14px 0 0;padding-inline-start:22px;color:var(--muted);font-size:13.5px;line-height:1.9}
+  .sheet-steps li::marker{color:var(--gold-light);font-weight:700}
+  .sheet-status{min-height:24px;margin:8px 0 0;font-size:13.5px;font-weight:700;color:var(--gold-light);text-align:center}
+  .sheet-go{
+    margin-top:8px;width:100%;
+    display:flex;align-items:center;justify-content:center;gap:10px;
+    min-height:54px;padding:12px 18px;
+    font-family:inherit;font-size:16.5px;font-weight:800;
+    color:#171106;cursor:pointer;
+    background:linear-gradient(135deg, rgba(232,207,143,.95), rgba(154,127,74,.85));
+    border:1px solid rgba(255,255,255,.4);
+    border-radius:14px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.5), 0 10px 24px rgba(0,0,0,.3);
+  }
+  .sheet-go:active{transform:scale(.99)}
+  .sheet-copy{
+    margin-top:10px;width:100%;
+    display:flex;align-items:center;justify-content:center;gap:8px;
+    min-height:48px;padding:10px 16px;
+    font-family:inherit;font-size:14.5px;font-weight:700;
+    color:var(--gold-light);cursor:pointer;
+    background:linear-gradient(135deg, rgba(255,255,255,.14), rgba(255,255,255,.05));
+    -webkit-backdrop-filter:blur(12px) saturate(1.4);
+    backdrop-filter:blur(12px) saturate(1.4);
+    border:1px solid rgba(255,255,255,.22);
+    border-radius:14px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.25);
+  }
+  .sheet-copy:active{transform:scale(.985)}
+  .sheet-go:focus-visible,.sheet-copy:focus-visible,.sheet-close:focus-visible{outline:2px solid var(--gold-light);outline-offset:2px}
+
+  @media (max-width:520px){
+    h1{font-size:36px}
+    .card-top{flex-direction:column;gap:10px}
+    .price{text-align:right}
+    .price strong{font-size:24px}
+    .highlights{grid-template-columns:1fr}
+    .top{padding-top:36px}
+  }
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto}
+    .pick,.bookbar,.sheet,.sheet-backdrop,.bb-btn{transition:none}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div class="ornament" aria-hidden="true"><span></span><i></i><span></span></div>
+    <p class="brand">POORYA STUDIO</p>
+    <h1>تعرفه خدمات<br><em>پوریا استودیو</em></h1>
+    <p class="subtitle">فیلمبرداری و تولید محتوا</p>
+    <p class="tags">بیوتی <b>•</b> فشن <b>•</b> موزیک‌ویدیو</p>
+    <p class="intro">برای سالن‌های زیبایی و بوتیک‌ها — کلیپ‌هایی که کار شما را همان‌طور که هست، حرفه‌ای و چشمگیر نشان می‌دهد.</p>
+  </header>
+
+  <!-- تکی -->
+  <section class="section" aria-labelledby="single-title">
+    <div class="section-head">
+      <span class="num">۱</span>
+      <h2 id="single-title">خدمات تکی</h2>
+    </div>
+    <div class="list">
+      <article class="card">
+        <div class="card-top">
+          <div>
+            <h3>ریلز کوتاه معرفی محصول</h3>
+            <p>تا ۳۰ ثانیه — فیلمبرداری + تدوین</p>
+          </div>
+          <div class="price">
+            <strong>۲٬۰۰۰٬۰۰۰ <small>تومان</small></strong>
+          </div>
+        </div>
+        <button type="button" class="pick" data-service="ریلز کوتاه معرفی محصول" data-price="۲٬۰۰۰٬۰۰۰ تومان">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4Z"/></svg>
+          <span class="pick-label">ارسال و پیست</span>
+        </button>
+      </article>
+
+      <article class="card">
+        <div class="card-top">
+          <div>
+            <h3>کلیپ کامل‌تر</h3>
+            <p>۱ تا ۲ دقیقه — چند نما</p>
+          </div>
+          <div class="price">
+            <strong>۵٬۰۰۰٬۰۰۰ <small>تومان</small></strong>
+          </div>
+        </div>
+        <button type="button" class="pick" data-service="کلیپ کامل‌تر (۱ تا ۲ دقیقه)" data-price="۵٬۰۰۰٬۰۰۰ تومان">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4Z"/></svg>
+          <span class="pick-label">ارسال و پیست</span>
+        </button>
+      </article>
+
+      <article class="card">
+        <div class="card-top">
+          <div>
+            <h3>موزیک‌ویدیو</h3>
+            <p>بسته به سناریو و لوکیشن</p>
+          </div>
+          <div class="price">
+            <span>از</span>
+            <strong>۱۵٬۰۰۰٬۰۰۰ <small>تومان</small></strong>
+          </div>
+        </div>
+        <button type="button" class="pick" data-service="موزیک‌ویدیو" data-price="از ۱۵٬۰۰۰٬۰۰۰ تومان">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4Z"/></svg>
+          <span class="pick-label">ارسال و پیست</span>
+        </button>
+      </article>
+    </div>
+  </section>
+
+  <!-- پکیج ماهانه -->
+  <section class="section" aria-labelledby="package-title">
+    <div class="section-head">
+      <span class="num">۲</span>
+      <h2 id="package-title">پکیج ماهانه</h2>
+    </div>
+    <div class="list">
+      <article class="card featured">
+        <span class="badge">✦ پیشنهاد برای شروع همکاری</span>
+        <div class="card-top">
+          <div>
+            <h3>۴ ریلز در ماه</h3>
+            <p>مناسب برای حضور منظم در اینستاگرام</p>
+          </div>
+          <div class="price">
+            <strong>۷٬۰۰۰٬۰۰۰ <small>تومان</small></strong>
+            <span>در ماه</span>
+          </div>
+        </div>
+        <div class="per">
+          <span>قیمت هر ریلز در این پکیج</span>
+          <b>۱٬۷۵۰٬۰۰۰ تومان</b>
+        </div>
+        <button type="button" class="pick" data-service="پکیج ماهانه — ۴ ریلز در ماه" data-price="۷٬۰۰۰٬۰۰۰ تومان در ماه">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4Z"/></svg>
+          <span class="pick-label">ارسال و پیست</span>
+        </button>
+      </article>
+
+      <article class="card">
+        <div class="card-top">
+          <div>
+            <h3>۸ ریلز در ماه</h3>
+            <p>برای پیج‌هایی که تولید محتوای بیشتری می‌خواهند</p>
+          </div>
+          <div class="price">
+            <strong>۱۳٬۰۰۰٬۰۰۰ <small>تومان</small></strong>
+            <span>در ماه</span>
+          </div>
+        </div>
+        <button type="button" class="pick" data-service="پکیج ماهانه — ۸ ریلز در ماه" data-price="۱۳٬۰۰۰٬۰۰۰ تومان در ماه">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4Z"/></svg>
+          <span class="pick-label">ارسال و پیست</span>
+        </button>
+      </article>
+    </div>
+  </section>
+
+  <!-- نکات مهم -->
+  <div class="highlights">
+    <div class="hl free">
+      <div class="hl-title">کلیپ نمونه: رایگان</div>
+      <div class="hl-sub">برای آشنایی با سبک کار، قبل از شروع همکاری</div>
+      <button type="button" class="pick on-gold" data-service="کلیپ نمونه رایگان" data-price="رایگان">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4Z"/></svg>
+        <span class="pick-label">درخواست کلیپ نمونه</span>
+      </button>
+    </div>
+    <div class="hl pay">
+      <div class="hl-big">۵۰٪</div>
+      <div class="hl-title">پیش‌پرداخت</div>
+      <div class="hl-sub">قبل از فیلمبرداری دریافت می‌شود</div>
+    </div>
+  </div>
+
+  <p class="note">
+    این تعرفه‌ها برای <strong>رامهرمز و شهرهای اطراف</strong> است.<br>
+    قیمت دقیق هر پروژه، بسته به نوع کار و جزئیات آن مشخص می‌شود.
+  </p>
+
+  <!-- CTA -->
+  <section class="cta" aria-labelledby="cta-title">
+    <h2 id="cta-title">برای رزرو پروژه</h2>
+    <p id="cta-text">خدمت موردنظرتون رو از بالا انتخاب کنید، یا مستقیم در اینستاگرام دایرکت بدید؛ در خدمتم</p>
+    <a class="cta-btn" id="cta-btn" href="https://ig.me/m/poorya.studio" target="_blank" rel="noopener">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="currentColor"/></svg>
+      <span class="cta-handle">@poorya.studio</span>
+    </a>
+  </section>
+
+  <p class="footer">پوریا استودیو <span class="dot">•</span> رامهرمز</p>
+
+</div>
+
+<!-- نوار ثبت سفارش -->
+<div class="bookbar" id="bookbar" aria-hidden="true">
+  <div class="bookbar-in">
+    <div class="bookbar-txt">
+      <div class="bb-name" id="bb-name"></div>
+      <div class="bb-price" id="bb-price"></div>
+    </div>
+    <a class="bb-btn" id="bb-btn" href="https://ig.me/m/poorya.studio" target="_blank" rel="noopener">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4Z"/></svg>
+      ثبت در دایرکت
+    </a>
+  </div>
+</div>
+<!-- برگه تکمیل سفارش -->
+<div class="sheet-backdrop" id="sheet-backdrop"></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title" aria-hidden="true">
+  <div class="sheet-card">
+    <button type="button" class="sheet-close" id="sheet-close" aria-label="بستن">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+    </button>
+    <h2 id="sheet-title">فقط یک قدم مونده</h2>
+    <p class="sheet-sub">متن سفارش شما آماده‌ست؛ کافیه در دایرکت اینستاگرام ارسالش کنید:</p>
+    <div class="sheet-msg" id="sheet-msg"></div>
+    <ol class="sheet-steps">
+      <li>دکمه طلایی پایین رو بزنید؛ متن سفارش کپی می‌شه و دایرکت باز می‌شه.</li>
+      <li>توی دایرکت، روی کادر پیام نگه دارید، «چسباندن» (Paste) رو بزنید و ارسال کنید.</li>
+    </ol>
+    <p class="sheet-status" id="sheet-status" role="status"></p>
+    <button type="button" class="sheet-go" id="sheet-go">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4Z"/></svg>
+      کپی متن و رفتن به دایرکت
+    </button>
+    <button type="button" class="sheet-copy" id="sheet-copy">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+      فقط کپی کردن متن
+    </button>
+  </div>
+</div>
+
+<script>
+(function () {
+  var DM = 'https://ig.me/m/poorya.studio';
+  var picks = Array.prototype.slice.call(document.querySelectorAll('.pick'));
+  var bar = document.getElementById('bookbar');
+  var bbName = document.getElementById('bb-name');
+  var bbPrice = document.getElementById('bb-price');
+  var bbBtn = document.getElementById('bb-btn');
+  var ctaBtn = document.getElementById('cta-btn');
+  var ctaText = document.getElementById('cta-text');
+  var sheet = document.getElementById('sheet');
+  var backdrop = document.getElementById('sheet-backdrop');
+  var sheetMsg = document.getElementById('sheet-msg');
+  var sheetStatus = document.getElementById('sheet-status');
+  var sheetGo = document.getElementById('sheet-go');
+  var sheetCopy = document.getElementById('sheet-copy');
+  var sheetClose = document.getElementById('sheet-close');
+  var current = null;
+
+  function message(name, price) {
+    return 'سلام، وقت بخیر 🌿\nبرای ثبت سفارش «' + name + '» (' + price + ') پیام می‌دم.\nممنون می‌شم برای هماهنگی راهنمایی کنید.';
+  }
+  function dmUrl(name, price) {
+    return DM + '?text=' + encodeURIComponent(message(name, price));
+  }
+  function setStatus(txt) {
+    sheetStatus.textContent = txt;
+  }
+  function copyText(text, done) {
+    function ok() { if (done) done(); }
+    function fallback() {
+      try {
+        var ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        ok();
+      } catch (e) { /* کپی ممکن نیست؛ متن داخل برگه نمایش داده شده و قابل کپی دستی است */ }
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(ok, fallback);
+    } else {
+      fallback();
+    }
+  }
+  function copiedNote() {
+    setStatus('✓ متن سفارش کپی شد — در دایرکت پیست کنید و بفرستید');
+  }
+  function openSheet() {
+    if (!current) return;
+    sheetMsg.textContent = message(current.name, current.price);
+    setStatus('');
+    sheet.classList.add('show');
+    backdrop.classList.add('show');
+    sheet.setAttribute('aria-hidden', 'false');
+    copyText(message(current.name, current.price), copiedNote);
+  }
+  function closeSheet() {
+    sheet.classList.remove('show');
+    backdrop.classList.remove('show');
+    sheet.setAttribute('aria-hidden', 'true');
+  }
+  function select(btn) {
+    picks.forEach(function (b) {
+      var wrap = b.closest('.card, .hl');
+      if (wrap) wrap.classList.remove('selected');
+      b.querySelector('.pick-label').textContent = b.getAttribute('data-label');
+      b.setAttribute('aria-pressed', 'false');
+    });
+    var wrap = btn.closest('.card, .hl');
+    if (wrap) wrap.classList.add('selected');
+    btn.querySelector('.pick-label').textContent = '✓ انتخاب شد';
+    btn.setAttribute('aria-pressed', 'true');
+    current = { name: btn.getAttribute('data-service'), price: btn.getAttribute('data-price') };
+    var url = dmUrl(current.name, current.price);
+    bbName.textContent = current.name;
+    bbPrice.textContent = current.price;
+    bbBtn.setAttribute('href', url);
+    ctaBtn.setAttribute('href', url);
+    ctaText.textContent = 'خدمت انتخابی شما: «' + current.name + '» — دکمه زیر رو بزنید تا متن سفارش آماده بشه و دایرکت باز بشه.';
+    bar.classList.add('show');
+    bar.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('has-bar');
+  }
+  picks.forEach(function (btn) {
+    btn.setAttribute('data-label', btn.querySelector('.pick-label').textContent);
+    btn.setAttribute('aria-pressed', 'false');
+    btn.addEventListener('click', function () { select(btn); });
+  });
+  [bbBtn, ctaBtn].forEach(function (a) {
+    a.addEventListener('click', function (e) {
+      if (current) {
+        e.preventDefault();
+        openSheet();
+      }
+    });
+  });
+  sheetGo.addEventListener('click', function () {
+    if (!current) return;
+    copyText(message(current.name, current.price), copiedNote);
+    window.open(dmUrl(current.name, current.price), '_blank', 'noopener');
+  });
+  sheetCopy.addEventListener('click', function () {
+    if (!current) return;
+    copyText(message(current.name, current.price), function () {
+      setStatus('✓ متن سفارش کپی شد');
+    });
+  });
+  sheetClose.addEventListener('click', closeSheet);
+  backdrop.addEventListener('click', closeSheet);
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') closeSheet();
+  });
+})();
+</script>
+</body>
+</html>
