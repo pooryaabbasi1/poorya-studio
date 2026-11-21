@@ -60,7 +60,7 @@
   .container { max-width: 820px; margin: 0 auto; padding: 0 18px; }
 
   /* PIN SCREEN */
-  #pin-screen {
+  #pin-screen { display: none !important;
     position: fixed;
     inset: 0;
     z-index: 9999;
@@ -822,23 +822,15 @@
   const GITHUB_REPO = "pooryaabbasi1/poorya-studio";
   const DATA_PATH = "data.json";
 
-  // Check PIN
+  // Direct access without PIN
   function checkPin() {
-    const input = document.getElementById('pin-input').value.trim();
-    const storedPin = siteData?.general?.adminPin || localStorage.getItem('poorya_admin_pin') || '1234';
-    if (input === storedPin || input === '1234') {
-      document.getElementById('pin-screen').style.display = 'none';
-      sessionStorage.setItem('poorya_admin_auth', 'true');
-    } else {
-      document.getElementById('pin-error').style.display = 'block';
-    }
+    const el = document.getElementById('pin-screen');
+    if (el) el.style.display = 'none';
   }
 
   // Init
   async function init() {
-    if (sessionStorage.getItem('poorya_admin_auth') === 'true') {
-      document.getElementById('pin-screen').style.display = 'none';
-    }
+
 
     try {
       const res = await fetch('./data.json?v=' + Date.now());
