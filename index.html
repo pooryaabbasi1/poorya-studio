@@ -1032,8 +1032,9 @@
 
           let mediaHtml = '';
           if (t.image) {
-            if (t.image.startsWith('data:video') || t.image.endsWith('.mp4') || t.image.endsWith('.webm')) {
-              mediaHtml = `<video class="podium-img" src="${t.image}" autoplay loop muted playsinline></video>`;
+            const isVideo = t.image.startsWith('data:video') || /\.(mp4|webm|mov|m4v)($|\?)/i.test(t.image);
+            if (isVideo) {
+              mediaHtml = `<video class="podium-img" src="${t.image}" autoplay loop muted playsinline webkit-playsinline disablePictureInPicture></video>`;
             } else {
               mediaHtml = `<img class="podium-img" src="${t.image}" alt="${t.title}" loading="lazy" />`;
             }
