@@ -989,8 +989,7 @@
         const g = data.general;
         if (g.heroTitle) {
           const ht = document.querySelector('.hero-title');
-          if (ht) ht.innerHTML = g.heroTitle.replace(/
-/g, '<br>');
+          if (ht) ht.innerHTML = g.heroTitle.replace(/\r?\n/g, '<br>');
         }
         if (g.heroDesc) {
           const hd = document.querySelector('.hero-sub');
