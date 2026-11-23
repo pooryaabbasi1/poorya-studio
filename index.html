@@ -1034,7 +1034,8 @@
           if (t.image) {
             const isVideo = t.image.startsWith('data:video') || /\.(mp4|webm|mov|m4v)($|\?)/i.test(t.image);
             if (isVideo) {
-              mediaHtml = `<video class="podium-img" src="${t.image}" autoplay loop muted playsinline webkit-playsinline disablePictureInPicture></video>`;
+              const posterAttr = t.poster ? `poster="${t.poster}"` : "";
+              mediaHtml = `<video class="podium-img" src="${t.image}" ${posterAttr} autoplay loop muted playsinline webkit-playsinline disablePictureInPicture preload="auto"></video>`;
             } else {
               mediaHtml = `<img class="podium-img" src="${t.image}" alt="${t.title}" loading="lazy" />`;
             }
