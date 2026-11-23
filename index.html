@@ -1039,6 +1039,8 @@
             } else {
               mediaHtml = `<img class="podium-img" src="${t.image}" alt="${t.title}" loading="lazy" />`;
             }
+          } else {
+            mediaHtml = `<div class="podium-img" style="display:flex; align-items:center; justify-content:center; background:radial-gradient(circle at center, rgba(212,163,89,0.15) 0%, rgba(10,10,12,0.85) 75%); color:var(--gold-light); font-size:46px;">🎬</div>`;
           }
 
           let specsHtml = '';
