@@ -502,6 +502,26 @@
     border-color: var(--gold-light);
     transform: translateY(-1px);
   }
+  .btn-remove-media {
+    padding: 10px 16px;
+    border-radius: 12px;
+    background: rgba(239, 68, 68, 0.12);
+    border: 1px solid rgba(239, 68, 68, 0.35);
+    color: #fca5a5;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s ease;
+  }
+  .btn-remove-media:hover {
+    background: rgba(239, 68, 68, 0.25);
+    border-color: #ef4444;
+    color: #fff;
+    transform: translateY(-1px);
+  }
 
   /* Upload Conditions & Specs Box - Neatly positioned under button */
   .upload-conditions-card {
@@ -922,6 +942,10 @@
               <span>🎬</span>
               <span>انتخاب ویدیو (MP4 ۳ الی ۴ ثانیه‌ای) یا 📁 عکس</span>
             </button>
+            <button type="button" class="btn-remove-media" id="btn-remove-media" onclick="removeCurrentTariffMedia()">
+              <span>🗑️</span>
+              <span>حذف عکس / فیلم این تعرفه</span>
+            </button>
           </div>
 
           <!-- راهنما و شرایط آپلود در زیر دکمه و کاملاً داخل کادر -->
@@ -1292,12 +1316,51 @@
   }
 
   // Delete Tariff
+  function queueFileForDeletion(filePath) {
+    if (!filePath || typeof filePath !== 'string') return;
+    const match = filePath.match(/(?:^\.?\/)?videos\/([^?#]+)/i);
+    if (match && match[1]) {
+      const fileName = match[1].toLowerCase();
+      let queued = [];
+      try {
+        queued = JSON.parse(localStorage.getItem('poorya_pending_deletions') || '[]');
+      } catch(e) { queued = []; }
+      if (!queued.includes(fileName)) {
+        queued.push(fileName);
+        localStorage.setItem('poorya_pending_deletions', JSON.stringify(queued));
+      }
+    }
+  }
+
+  function removeCurrentTariffMedia() {
+    const mediaInput = document.getElementById('tariff-media-src');
+    const currentVal = mediaInput ? mediaInput.value.trim() : '';
+
+    if (currentVal || currentPendingMedia) {
+      if (confirm("آیا از حذف عکس/فیلم این تعرفه مطمئن هستید؟ با زدن دکمه «ذخیره و انتشار»، این فایل از مخزن گیت‌هاب نیز به طور کامل پاک می‌شود تا فضا نگیرد.")) {
+        if (currentVal) {
+          queueFileForDeletion(currentVal);
+        }
+        if (mediaInput) mediaInput.value = '';
+        currentPendingMedia = null;
+        hideMediaProgress();
+        updateMediaPreview('');
+        showToast("عکس/فیلم تعرفه حذف شد. برای حذف نهایی از مخزن، دکمه ذخیره و انتشار را بزنید", "🗑️");
+      }
+    } else {
+      showToast("این تعرفه هیچ عکس یا ویدیویی ندارد", "ℹ️");
+    }
+  }
+
   function deleteTariff(idx) {
     const item = siteData.tariffs[idx];
-    if (confirm(`آیا از حذف تعرفه «${item.title}» مطمئن هستید؟`)) {
+    if (confirm(`آیا از حذف تعرفه «${item.title}» مطمئن هستید؟ فایل‌های عکس و ویدیوی اختصاصی این تعرفه نیز از گیت‌هاب پاک خواهند شد.`)) {
+      if (item.image) {
+        queueFileForDeletion(item.image);
+      }
       siteData.tariffs.splice(idx, 1);
       renderTariffsList();
-      showToast("تعرفه حذف شد (برای ثبت نهایی، ذخیره و انتشار را بزنید)");
+      showToast("تعرفه حذف شد (برای اعمال نهایی و پاکسازی فایل‌ها از گیت‌هاب، ذخیره و انتشار را بزنید)", "🗑️");
     }
   }
 
@@ -1715,6 +1778,78 @@ function saveTariffModal() {
       openSettingsModal();
       showToast("برای انتشار مستقیم لطفاً توکن را وارد کنید یا فایل را دانلود نمایید", "ℹ️");
       return;
+    }
+
+    // 0. Auto-cleanup removed or orphaned video files from GitHub videos/ folder
+    try {
+      showPubProgress("در حال بررسی فایل‌ها", "بررسی و پاکسازی فایل‌های حذف شده از مخزن گیت‌هاب...", 6, "🧹");
+      
+      const activeVideoFiles = new Set();
+      siteData.tariffs.forEach(t => {
+        if (t.image && typeof t.image === 'string') {
+          const match = t.image.match(/(?:^\.?\/)?videos\/([^?#]+)/i);
+          if (match && match[1]) {
+            activeVideoFiles.add(match[1].toLowerCase());
+          }
+        }
+        if (t.pendingMedia && t.pendingMedia.ext) {
+          const safeId = (t.id || '').replace(/[^a-zA-Z0-9_-]/g, '_');
+          if (safeId) {
+            activeVideoFiles.add(`${safeId}.${t.pendingMedia.ext}`.toLowerCase());
+          }
+        }
+      });
+
+      let queuedDeletions = [];
+      try {
+        queuedDeletions = JSON.parse(localStorage.getItem('poorya_pending_deletions') || '[]');
+      } catch(e) { queuedDeletions = []; }
+
+      const listVidsUrl = `https://api.github.com/repos/${GITHUB_REPO}/contents/videos`;
+      const listVidsRes = await fetch(listVidsUrl, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Accept': 'application/vnd.github+json'
+        }
+      });
+
+      if (listVidsRes.ok) {
+        const repoFiles = await listVidsRes.json();
+        if (Array.isArray(repoFiles)) {
+          for (const rf of repoFiles) {
+            const fName = rf.name.toLowerCase();
+            if (rf.type !== 'file' || fName === '.keep' || fName === '.gitkeep') continue;
+
+            const isQueued = queuedDeletions.some(q => q.toLowerCase().endsWith(fName));
+            const isOrphaned = !activeVideoFiles.has(fName);
+
+            if (isQueued || isOrphaned) {
+              showPubProgress("در حال پاکسازی فایل اضافی", `حذف ${rf.name} از مخزن جهت خالی شدن فضا...`, 8, "🗑️");
+              try {
+                await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${rf.path}`, {
+                  method: 'DELETE',
+                  headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/vnd.github+json',
+                    'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify({
+                    message: `Delete removed media: ${rf.name}`,
+                    sha: rf.sha,
+                    branch: 'main'
+                  })
+                });
+                console.log(`Successfully deleted removed media: ${rf.path}`);
+              } catch(delErr) {
+                console.warn(`Could not delete ${rf.path}:`, delErr);
+              }
+            }
+          }
+        }
+      }
+      localStorage.removeItem('poorya_pending_deletions');
+    } catch (cleanErr) {
+      console.warn("Media cleanup error:", cleanErr);
     }
 
     // 1. Upload any pending video files directly into videos/ directory in GitHub
