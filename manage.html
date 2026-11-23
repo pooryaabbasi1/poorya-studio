@@ -1011,10 +1011,16 @@
         <h4 style="color:var(--gold-light); font-size:14px; margin-bottom:6px;">🚀 روش ۱: انتشار خودکار مستقیم روی سایت</h4>
         <p style="font-size:12.5px; color:var(--text); line-height:1.7;">برای اینکه با هر بار زدن دکمه «ذخیره و انتشار»، تغییرات شما مستقیماً در سایت لایو شود، کلید دسترسی (Token) اکانت گیت‌هاب خود را اینجا وارد کنید:</p>
         <input type="password" id="gh-token-input" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" style="margin-top:8px; font-family:monospace;" />
-        <div style="margin-top:8px;">
-          <a href="https://github.com/settings/tokens/new?scopes=repo&description=PooryaStudioAdmin" target="_blank" style="color:var(--gold); font-size:12px; text-decoration:underline; font-weight:700;">
-            🔗 باز کردن صفحه ساخت توکن در گیت‌هاب (تیک repo را فعال و Generate را بزنید)
-          </a>
+        <div style="margin-top:8px; display:flex; flex-direction:column; gap:8px;">
+          <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+            <a href="https://github.com/settings/tokens/new?scopes=repo&description=PooryaStudioAdmin" target="_blank" style="color:var(--gold); font-size:12px; text-decoration:underline; font-weight:700;">
+              🔗 باز کردن صفحه ساخت توکن در گیت‌هاب (تیک repo را فعال و Generate را بزنید)
+            </a>
+            <button type="button" class="btn-save-publish" style="padding:5px 12px; font-size:11.5px; border-radius:8px;" onclick="testGithubConnection()">
+              🔍 تست اتصال و سلامت توکن
+            </button>
+          </div>
+          <div id="gh-test-status" style="font-size:12px; line-height:1.6;"></div>
         </div>
       </div>
       <div style="background:rgba(16,20,31,0.8); border:1px solid var(--line-glass); border-radius:14px; padding:14px;">
@@ -1513,7 +1519,8 @@
     return new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
       xhr.open('PUT', url, true);
-      xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+      xhr.timeout = 180000;
+      xhr.setRequestHeader('Authorization', `Bearer ${cleanToken(token)}`);
       xhr.setRequestHeader('Accept', 'application/vnd.github+json');
       xhr.setRequestHeader('Content-Type', 'application/json');
 
@@ -1533,6 +1540,12 @@
           } catch(e) {
             resolve({});
           }
+        } else if (xhr.status === 401) {
+          reject(new Error('توکن گیت‌هاب نامعتبر یا منقضی است (Bad credentials).'));
+        } else if (xhr.status === 403) {
+          reject(new Error('دسترسی مجاز نیست یا محدودیت ارسال گیت‌هاب اعمال شده است (403 Forbidden). مطمئن شوید تیک repo فعال باشد.'));
+        } else if (xhr.status === 413) {
+          reject(new Error('حجم فایل برای ارسال به گیت‌هاب بیش از حد بزرگ است (413 Payload Too Large). لطفاً ویدیوی سبک‌تر زیر ۵ مگابایت انتخاب کنید.'));
         } else {
           try {
             const err = JSON.parse(xhr.responseText);
@@ -1543,8 +1556,12 @@
         }
       };
 
+      xhr.ontimeout = function() {
+        reject(new Error('زمان ارسال به پایان رسید (Timeout). لطفاً اتصال VPN/اینترنت را بررسی کنید یا فایل سبک‌تر انتخاب نمایید.'));
+      };
+
       xhr.onerror = function() {
-        reject(new Error('خطای ارتباط با سرور گیت‌هاب'));
+        reject(new Error('عدم برقراری ارتباط با سرور گیت‌هاب (احتمالاً به دلیل قطعی وی‌پی‌ان (VPN)، اختلال اینترنت یا قطع ارتباط در حین آپلود ویدیو)'));
       };
 
       xhr.send(bodyJson);
@@ -1762,9 +1779,48 @@ function saveTariffModal() {
     document.getElementById('settings-modal').classList.remove('active');
   }
 
+  
+  function cleanToken(t) {
+    if (!t) return '';
+    return String(t).replace(/^Bearer\s+/i, '').replace(/[\r\n\t\s"']/g, '');
+  }
+
+  
+  async function testGithubConnection() {
+    const tokenInput = document.getElementById('gh-token-input');
+    let token = cleanToken(tokenInput ? tokenInput.value : (localStorage.getItem('poorya_gh_token') || ''));
+    const statusBox = document.getElementById('gh-test-status');
+    if (!statusBox) return;
+    if (!token) {
+      statusBox.innerHTML = '<span style="color:var(--danger); font-weight:700;">⚠️ ابتدا توکن گیت‌هاب را در کادر بالا وارد کنید.</span>';
+      return;
+    }
+    statusBox.innerHTML = '<span style="color:var(--gold-light);">⏳ در حال بررسی ارتباط با سرور گیت‌هاب...</span>';
+    try {
+      const res = await fetch(`https://api.github.com/repos/${GITHUB_REPO}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Accept': 'application/vnd.github+json'
+        }
+      });
+      if (res.status === 200) {
+        statusBox.innerHTML = '<span style="color:var(--success); font-weight:700;">✅ عالی! ارتباط با سرور گیت‌هاب برقرار است و توکن دسترسی کامل به مخزن دارد.</span>';
+      } else if (res.status === 401) {
+        statusBox.innerHTML = '<span style="color:var(--danger); font-weight:700;">❌ کلید توکن نامعتبر یا منقضی است (Bad credentials). لطفاً یک توکن جدید با دسترسی repo بسازید.</span>';
+      } else if (res.status === 404 || res.status === 403) {
+        statusBox.innerHTML = '<span style="color:var(--danger); font-weight:700;">⚠️ دسترسی به این مخزن تأیید نشد (کد ' + res.status + '). مطمئن شوید تیک repo در زمان ساخت توکن فعال بوده است.</span>';
+      } else {
+        statusBox.innerHTML = `<span style="color:var(--danger);">کد پاسخ گیت‌هاب: ${res.status}</span>`;
+      }
+    } catch(err) {
+      console.error("Test connection error:", err);
+      statusBox.innerHTML = '<span style="color:var(--danger); font-weight:700;">❌ عدم ارتباط با سرور گیت‌هاب! اینترنت به api.github.com متصل نمی‌شود. لطفاً فیلترشکن (VPN) را روشن کنید یا سرور آن را تغییر دهید.</span>';
+    }
+  }
+
   function saveSettings() {
     const tokenInput = document.getElementById('gh-token-input');
-    const token = tokenInput ? tokenInput.value.trim() : '';
+    const token = cleanToken(tokenInput ? tokenInput.value : '');
     localStorage.setItem('poorya_gh_token', token);
     closeSettingsModal();
     loadSettingsInputs();
@@ -1773,7 +1829,8 @@ function saveTariffModal() {
 
   // Publish to GitHub with direct video uploads
   async function publishToGithub() {
-    const token = localStorage.getItem('poorya_gh_token');
+    let token = localStorage.getItem('poorya_gh_token');
+    token = cleanToken(token);
     if (!token) {
       openSettingsModal();
       showToast("برای انتشار مستقیم لطفاً توکن را وارد کنید یا فایل را دانلود نمایید", "ℹ️");
@@ -1918,8 +1975,13 @@ function saveTariffModal() {
         } catch (vidErr) {
           hidePubProgress();
           console.error("Video upload failed:", vidErr);
-          alert(`خطا در آپلود ویدیوی «${t.title}»: ${vidErr.message}`);
-          return;
+          const skipChoice = confirm(`خطا در آپلود ویدیوی «${t.title}»:\n${vidErr.message}\n\nنکته: برای ارتباط با سرور گیت‌هاب، فیلترشکن (VPN) شما باید روشن باشد.\n\nآیا مایلید از آپلود این ویدیو صرف‌نظر کنید تا بقیه تغییرات متنی و تعرفه‌ها در سایت ذخیره شوند؟`);
+          if (skipChoice) {
+            delete t.pendingMedia;
+            continue;
+          } else {
+            return;
+          }
         }
       }
     }
@@ -1992,7 +2054,11 @@ function saveTariffModal() {
     } catch (err) {
       hidePubProgress();
       console.error(err);
-      alert(`خطا در انتشار روی گیت‌هاب: ${err.message}`);
+      let msg = err.message || '';
+      if (msg.includes('Failed to fetch') || msg.includes('NetworkError')) {
+        msg = 'عدم برقراری ارتباط با سرور گیت‌هاب! لطفاً مطمئن شوید فیلترشکن (VPN) شما روشن است و اتصال اینترنت برقرار است.';
+      }
+      alert(`خطا در انتشار روی گیت‌هاب:\n${msg}`);
     }
   }
 
