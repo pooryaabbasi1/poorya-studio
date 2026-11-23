@@ -1032,11 +1032,14 @@
       card.className = 'tariff-item-card';
 
       let mediaHtml = '<span style="font-size:11px; color:var(--muted);">بدون تصویر</span>';
-      if (t.image) {
-        if (t.image.startsWith('data:video') || t.image.endsWith('.mp4')) {
-          mediaHtml = `<video src="${t.image}" muted playsinline></video>`;
+      if (t.pendingMedia && t.pendingMedia.objectUrl) {
+        mediaHtml = `<video src="${t.pendingMedia.objectUrl}" muted playsinline autoplay loop style="width:100%;height:100%;object-fit:cover;"></video>`;
+      } else if (t.image) {
+        if (t.image.startsWith('data:video') || /\.(mp4|webm|mov|m4v)($|\?)/i.test(t.image)) {
+          const posterAttr = t.poster ? `poster="${t.poster}"` : '';
+          mediaHtml = `<video src="${t.image}" ${posterAttr} muted playsinline style="width:100%;height:100%;object-fit:cover;"></video>`;
         } else {
-          mediaHtml = `<img src="${t.image}" alt="${t.title}" />`;
+          mediaHtml = `<img src="${t.image}" alt="${t.title}" style="width:100%;height:100%;object-fit:cover;" />`;
         }
       }
 
@@ -1160,13 +1163,15 @@
     container.appendChild(row);
   }
 
-  function updateMediaPreview(src) {
+  let currentPendingMedia = null;
+
+  function updateMediaPreview(src, isExplicitVideo = false) {
     const preview = document.getElementById('media-preview');
     if (!src) {
       preview.innerHTML = '<span style="color:var(--muted); font-size:12px;">پیش‌نمایش تصویر یا ویدیو</span>';
       return;
     }
-    const isVid = src.startsWith('data:video') || /\.(mp4|webm|mov|m4v)($|\?)/i.test(src);
+    const isVid = isExplicitVideo || src.startsWith('blob:') || src.startsWith('data:video') || /\.(mp4|webm|mov|m4v)($|\?)/i.test(src);
     if (isVid) {
       preview.innerHTML = `<video src="${src}" autoplay loop muted playsinline controls style="max-height:100%; max-width:100%; border-radius:10px;"></video>`;
     } else {
@@ -1181,17 +1186,31 @@
     const isVideo = file.type.startsWith('video/') || /\.(mp4|webm|mov|m4v)$/i.test(file.name);
 
     if (isVideo) {
-      if (file.size > 25 * 1024 * 1024) {
-        showToast("حجم ویدیو بیشتر از ۲۵ مگابایت است. لطفاً ویدیوی ۳-۴ ثانیه‌ای سبک‌تر انتخاب کنید.", "⚠️");
+      if (file.size > 50 * 1024 * 1024) {
+        showToast("حجم ویدیو بیشتر از ۵۰ مگابایت است. لطفاً ویدیوی ۳-۴ ثانیه‌ای سبک‌تر انتخاب کنید.", "⚠️");
         return;
       }
-      showToast("در حال بارگذاری ویدیوی سه‌بعدی...", "🎬");
+      showToast("در حال آماده‌سازی ویدیوی ۳ الی ۴ ثانیه‌ای...", "🎬");
+      const objectUrl = URL.createObjectURL(file);
+      const ext = file.name.split('.').pop().toLowerCase() || 'mp4';
+
       const reader = new FileReader();
       reader.onload = function(evt) {
-        const videoData = evt.target.result;
-        document.getElementById('tariff-media-src').value = videoData;
-        updateMediaPreview(videoData);
-        showToast("ویدیوی ۳-۴ ثانیه‌ای با موفقیت بارگذاری شد", "✅");
+        const fullDataUrl = evt.target.result;
+        currentPendingMedia = {
+          file: file,
+          name: file.name,
+          ext: ext,
+          dataUrl: fullDataUrl,
+          objectUrl: objectUrl,
+          isVideo: true
+        };
+
+        const editId = document.getElementById('tariff-edit-id').value || ('tariff_' + Date.now());
+        const safeName = editId.replace(/[^a-zA-Z0-9_-]/g, '_');
+        document.getElementById('tariff-media-src').value = `./videos/${safeName}.${ext}`;
+        updateMediaPreview(objectUrl, true);
+        showToast("ویدیو آماده شد. پس از ذخیره، روی انتشار کلیک کنید.", "✅");
       };
       reader.onerror = function() {
         showToast("خطا در خواندن فایل ویدیو", "❌");
@@ -1225,8 +1244,9 @@
         ctx.drawImage(img, 0, 0, width, height);
         const webpData = canvas.toDataURL('image/webp', 0.82);
         
+        currentPendingMedia = null;
         document.getElementById('tariff-media-src').value = webpData;
-        updateMediaPreview(webpData);
+        updateMediaPreview(webpData, false);
         showToast("تصویر با موفقیت فشرده و جایگزین شد", "✅");
       };
       img.src = evt.target.result;
@@ -1247,6 +1267,19 @@
       if (v) specs.push(v);
     });
 
+    const existingTariff = editingTariffIndex >= 0 ? siteData.tariffs[editingTariffIndex] : null;
+    let mediaVal = document.getElementById('tariff-media-src').value.trim();
+
+    // Preserve original poster image
+    let posterImg = '';
+    if (existingTariff) {
+      if (existingTariff.poster) {
+        posterImg = existingTariff.poster;
+      } else if (existingTariff.image && !/\.(mp4|webm|mov|m4v)($|\?)/i.test(existingTariff.image) && !existingTariff.image.startsWith('data:video')) {
+        posterImg = existingTariff.image;
+      }
+    }
+
     const tariffObj = {
       id: document.getElementById('tariff-edit-id').value,
       num: document.getElementById('tariff-num').value.trim(),
@@ -1261,19 +1294,27 @@
       packageLabel: document.getElementById('tariff-pkg-label').value.trim(),
       packagePrice: document.getElementById('tariff-pkg-price').value.trim(),
       packageSub: document.getElementById('tariff-pkg-sub').value.trim(),
-      image: document.getElementById('tariff-media-src').value.trim(),
+      image: mediaVal,
+      poster: posterImg,
       ctaText: document.getElementById('tariff-cta-text').value.trim(),
       ctaLink: document.getElementById('tariff-cta-link').value.trim()
     };
 
-    if (editingTariffIndex >= 0) {
-      siteData.tariffs[editingTariffIndex] = tariffObj;
-      showToast("تعرفه ویرایش شد");
-    } else {
-      siteData.tariffs.push(tariffObj);
-      showToast("تعرفه جدید با موفقیت اضافه شد");
+    if (currentPendingMedia) {
+      tariffObj.pendingMedia = currentPendingMedia;
+      const safeId = (tariffObj.id || 'tariff_' + Date.now()).replace(/[^a-zA-Z0-9_-]/g, '_');
+      tariffObj.image = `./videos/${safeId}.${currentPendingMedia.ext || 'mp4'}`;
     }
 
+    if (editingTariffIndex >= 0) {
+      siteData.tariffs[editingTariffIndex] = tariffObj;
+      showToast("تعرفه ویرایش شد (برای نهایی‌سازی دکمه انتشار را بزنید)");
+    } else {
+      siteData.tariffs.push(tariffObj);
+      showToast("تعرفه جدید با موفقیت اضافه شد (برای نهایی‌سازی دکمه انتشار را بزنید)");
+    }
+
+    currentPendingMedia = null;
     closeTariffModal();
     renderTariffsList();
   }
@@ -1339,13 +1380,8 @@
     showToast("تنظیمات با موفقیت ذخیره شد", "✅");
   }
 
-  // Publish to GitHub
+  // Publish to GitHub with direct video uploads
   async function publishToGithub() {
-    // Also save backup to localStorage immediately
-    try {
-      localStorage.setItem('poorya_site_data', JSON.stringify(siteData));
-    } catch(e) {}
-
     const token = localStorage.getItem('poorya_gh_token');
     if (!token) {
       openSettingsModal();
@@ -1353,10 +1389,75 @@
       return;
     }
 
-    showToast("در حال ارسال و ذخیره در مخزن گیت‌هاب...", "⏳");
+    // 1. Upload any pending video files directly into videos/ directory in GitHub
+    const tariffsWithPending = siteData.tariffs.filter(t => t.pendingMedia && t.pendingMedia.dataUrl);
+    if (tariffsWithPending.length > 0) {
+      for (const t of tariffsWithPending) {
+        showToast(`در حال آپلود ویدیوی ${t.title} در مخزن گیت‌هاب...`, "🎬");
+        try {
+          const safeId = (t.id || ('tariff_' + Date.now())).replace(/[^a-zA-Z0-9_-]/g, '_');
+          const ext = t.pendingMedia.ext || 'mp4';
+          const filePath = `videos/${safeId}.${ext}`;
+          const b64Data = t.pendingMedia.dataUrl.split(',')[1];
+
+          // Check if file exists to get SHA
+          const checkUrl = `https://api.github.com/repos/${GITHUB_REPO}/contents/${filePath}`;
+          const checkRes = await fetch(checkUrl, {
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Accept': 'application/vnd.github+json'
+            }
+          });
+          let fileSha = null;
+          if (checkRes.ok) {
+            const checkData = await checkRes.json();
+            fileSha = checkData.sha;
+          }
+
+          const uploadBody = {
+            message: `Upload video for ${t.title}`,
+            content: b64Data,
+            branch: 'main'
+          };
+          if (fileSha) uploadBody.sha = fileSha;
+
+          const uploadRes = await fetch(checkUrl, {
+            method: 'PUT',
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Accept': 'application/vnd.github+json',
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(uploadBody)
+          });
+
+          if (!uploadRes.ok) {
+            const errJson = await uploadRes.json();
+            throw new Error(errJson.message || 'خطا در آپلود ویدیو');
+          }
+
+          t.image = `./${filePath}`;
+          delete t.pendingMedia;
+        } catch (vidErr) {
+          console.error("Video upload failed:", vidErr);
+          alert(`خطا در آپلود ویدیوی «${t.title}»: ${vidErr.message}`);
+          return;
+        }
+      }
+    }
 
     try {
-      // 1. Get current SHA of data.json
+      const cleanSiteData = JSON.parse(JSON.stringify(siteData));
+      if (cleanSiteData.tariffs) {
+        cleanSiteData.tariffs.forEach(t => { delete t.pendingMedia; });
+      }
+      localStorage.setItem('poorya_site_data', JSON.stringify(cleanSiteData));
+    } catch(e) {}
+
+    showToast("در حال ارسال و ذخیره نهایی در مخزن گیت‌هاب...", "⏳");
+
+    try {
+      // 2. Get current SHA of data.json
       const getUrl = `https://api.github.com/repos/${GITHUB_REPO}/contents/${DATA_PATH}`;
       const getRes = await fetch(getUrl, {
         headers: {
@@ -1371,14 +1472,20 @@
         sha = fileInfo.sha;
       }
 
-      // 2. Prepare UTF-8 Base64 content
-      const jsonStr = JSON.stringify(siteData, null, 2);
+      // 3. Prepare clean JSON without pendingMedia
+      const cleanSiteData = JSON.parse(JSON.stringify(siteData));
+      if (cleanSiteData.tariffs) {
+        cleanSiteData.tariffs.forEach(t => { delete t.pendingMedia; });
+      }
+
+      const jsonStr = JSON.stringify(cleanSiteData, null, 2);
       const b64Content = btoa(unescape(encodeURIComponent(jsonStr)));
 
-      // 3. PUT update
+      // 4. PUT update
       const putBody = {
         message: "به‌روزرسانی تعرفه‌ها و محتوا از پنل مدیریت",
-        content: b64Content
+        content: b64Content,
+        branch: "main"
       };
       if (sha) putBody.sha = sha;
 
@@ -1397,7 +1504,8 @@
         throw new Error(err.message || 'خطا در ثبت اطلاعات در گیت‌هاب');
       }
 
-      showToast("🚀 تغییرات در مخزن ذخیره شد! تا ۳۰ ثانیه دیگر در سایت لایو اعمال می‌شود.", "🎉");
+      showToast("🚀 تغییرات و ویدیوها با موفقیت در سایت ثبت و منتشر شدند!", "🎉");
+      renderTariffsList();
     } catch (err) {
       console.error(err);
       alert("خطا در انتشار: " + err.message + "\nلطفاً از صحت توکن گیت‌هاب و دسترسی repo اطمینان حاصل کنید.");
